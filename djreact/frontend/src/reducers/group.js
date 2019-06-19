@@ -3,7 +3,8 @@ import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP} from '../actions/t
 const initialState = {
 	groupsData: [],
 	pagination: {},
-	message: ''
+	message: '',
+	alert: ''
 };
 
 export default function(state = initialState, action) {
@@ -29,13 +30,15 @@ export default function(state = initialState, action) {
 		case CREATE_GROUP:
 			return {
 				...state,
-				message: action.message
+				message: action.message,
+				alert: action.alert
 			};
 
 		case UPDATE_GROUP:
 			return {
 				...state,
-				message: action.message
+				message: action.message,
+				alert: action.alert
 			};
 
 		case DELETE_GROUP:
@@ -45,7 +48,8 @@ export default function(state = initialState, action) {
 				groupsData: state.groupsData.length
 					? state.groupsData.filter(group => parseInt(group.id) !== parseInt(action.payload))
 					: {},
-				message: action.message
+				message: action.message,
+				alert: action.alert
 			};
 
 		default:

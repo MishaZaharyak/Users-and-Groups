@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { createGroup, updateGroupData, deleteGroup } from '../../actions/group';
 import axios from 'axios';
+import { useAlert } from 'react-alert'
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 const UserForm = props => {
+	const alert = useAlert();
 	const [groupData, setGroupData] = useState({
 		name: '',
 		description: '',
@@ -19,7 +21,8 @@ const UserForm = props => {
 		setGroupData({
 			name: '',
             description: '',
-		})
+		});
+		alert.show(props.message, {type: props.alert})
 	};
 
 	const handleUpdate = e => {
@@ -27,6 +30,7 @@ const UserForm = props => {
 		const { name, description } = groupData;
 
 		props.updateGroupData({ name, description, id: parseInt(groupId) });
+		alert.show(props.message, {type: props.alert})
 	};
 
 	useEffect(function() {
@@ -112,7 +116,12 @@ const UserForm = props => {
 	);
 };
 
+const mapStateToProps = state => ({
+	message: state.groupsData.message,
+	alert: state.groupsData.alert,
+});
+
 export default connect(
-	null,
+	mapStateToProps,
 	{ createGroup, updateGroupData, deleteGroup }
 )(UserForm);

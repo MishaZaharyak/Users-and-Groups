@@ -21,12 +21,13 @@ export const deleteGroup = id => dispatch => {
 	axios
 		.delete(`${BASE_URL}/groups/${id}/`)
 		.then(res => {
-			const {id, message} = res.data;
+			const {id, message, alert} = res.data;
 
 			dispatch({
 				type: DELETE_GROUP,
 				payload: id ? id : '',
-				message: message
+				message: message,
+				alert: alert
 			});
 		})
 		.catch(err => console.error(err));
@@ -40,7 +41,8 @@ export const createGroup = data => dispatch => {
 			dispatch({
 				type: CREATE_GROUP,
 				payload: res.data,
-				message: 'Group successfully created'
+				message: 'Group successfully created',
+				alert: 'success'
 			});
 		})
 		.catch(err => console.error(err));
@@ -53,7 +55,8 @@ export const updateGroupData = data => dispatch => {
 		.then(res => {
 			dispatch({
 				type: UPDATE_GROUP,
-				message: 'Group successfully updated'
+				message: 'Group successfully updated',
+				alert: 'success'
 			});
 		})
 		.catch(err => console.error(err));

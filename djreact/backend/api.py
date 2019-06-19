@@ -38,13 +38,15 @@ class GroupViewSet(viewsets.ModelViewSet):
 
         if instance.usermodel_set.all().count() > 0:
             return Response({
-                'message': 'This model has a users'
+                'message': 'This model has a users',
+                'alert': 'error'
             })
 
         self.perform_destroy(instance)
         return Response({
             'id': id,
-            'message': 'Group was deleted!'
+            'message': 'Group was deleted!',
+            'alert': 'success'
         })
 
     def perform_destroy(self, instance):

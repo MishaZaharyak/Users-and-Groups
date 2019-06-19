@@ -24,7 +24,8 @@ export const deleteUser = id => dispatch => {
 			dispatch({
 				type: DELETE_USER,
 				payload: id,
-				message: 'User was deleted!'
+				message: 'User was deleted!',
+				alert: 'success'
 			});
 		})
 		.catch(err => console.error(err));
@@ -38,7 +39,8 @@ export const createUser = data => dispatch => {
 			dispatch({
 				type: CREATE_USER,
 				payload: res.data,
-				message: 'User successfully created'
+				message: 'User successfully created',
+				alert: 'success'
 			});
 		})
 		.catch(err => console.error(err));
@@ -51,7 +53,8 @@ export const updateUserData = data => dispatch => {
 		.then(res => {
 			dispatch({
 				type: UPDATE_USER,
-				message: 'User successfully updated'
+				message: 'User successfully updated',
+				alert: 'success'
 			});
 		})
 		.catch(err => console.error(err));
