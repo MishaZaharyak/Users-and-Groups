@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP} from './types';
+import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP, GET_ERRORS} from './types';
+import {createMessage} from './messages';
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
@@ -13,7 +14,17 @@ export const getGroups = () => dispatch => {
 				payload: res.data
 			});
 		})
-		.catch(err => console.error(err));
+		.catch(err => {
+			const errors = {
+				msg: err.response.data,
+				status: err.response.status
+			};
+
+			dispatch({
+				type: GET_ERRORS,
+				payload: errors
+			});
+		});
 };
 
 // delete group
@@ -21,16 +32,28 @@ export const deleteGroup = id => dispatch => {
 	axios
 		.delete(`${BASE_URL}/groups/${id}/`)
 		.then(res => {
-			const {id, message, alert} = res.data;
+			const {id, message} = res.data;
+
+			dispatch(createMessage({
+				deleteGroup: 'Group was deleted'
+			}));
 
 			dispatch({
 				type: DELETE_GROUP,
 				payload: id ? id : '',
-				message: message,
-				alert: alert
 			});
 		})
-		.catch(err => console.error(err));
+		.catch(err => {
+			const errors = {
+				msg: err.response.data,
+				status: err.response.status
+			};
+
+			dispatch({
+				type: GET_ERRORS,
+				payload: errors
+			});
+		});
 };
 
 // create group
@@ -38,14 +61,26 @@ export const createGroup = data => dispatch => {
 	axios
 		.post(`${BASE_URL}/groups/`, data)
 		.then(res => {
+			dispatch(createMessage({
+				createGroup: 'Group successfully created'
+			}));
+
 			dispatch({
 				type: CREATE_GROUP,
 				payload: res.data,
-				message: 'Group successfully created',
-				alert: 'success'
 			});
 		})
-		.catch(err => console.error(err));
+		.catch(err => {
+			const errors = {
+				msg: err.response.data,
+				status: err.response.status
+			};
+
+			dispatch({
+				type: GET_ERRORS,
+				payload: errors
+			});
+		});
 };
 
 // update group data
@@ -53,11 +88,24 @@ export const updateGroupData = data => dispatch => {
 	axios
 		.put(`${BASE_URL}/groups/${data.id}/`, data)
 		.then(res => {
+
+			dispatch(createMessage({
+				updateGroup: 'Group successfully updated'
+			}));
+
 			dispatch({
 				type: UPDATE_GROUP,
-				message: 'Group successfully updated',
-				alert: 'success'
 			});
 		})
-		.catch(err => console.error(err));
+		.catch(err => {
+			const errors = {
+				msg: err.response.data,
+				status: err.response.status
+			};
+
+			dispatch({
+				type: GET_ERRORS,
+				payload: errors
+			});
+		});
 };

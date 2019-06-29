@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { createUser, updateUserData, deleteUser } from '../../actions/user';
 import axios from 'axios';
+import { Redirect } from 'react-router';
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 const UserForm = props => {
 	const [groupsList, setGroupsList] = useState([]);
+
+	const [redirect, setRedirect] = useState(false);
+
 	const [userData, setUserData] = useState({
 		username: '',
 		group_id: '',
@@ -47,7 +51,7 @@ const UserForm = props => {
 						group_id: group.id
 					});
 				} catch (error) {
-					console.log(error);
+					console.error(error);
 				}
 			}
 		})();
@@ -62,67 +66,74 @@ const UserForm = props => {
 
 	const deleteUser = id => {
 		props.deleteUser(id);
+
 		setUserData({
 			username: '',
 			group_id: '',
 			group: {},
-		})
+		});
+
+		setTimeout(() => setRedirect(true), 1000);
 	};
 
 	const { userId } = props.match.params;
 	const { username, group } = userData;
 
 	return (
-		<form action=''>
-			<div className='form-group'>
-				<label htmlFor='username'>Username: </label>
-				<input
-					type='text'
-					name='username'
-					className='form-control'
-					onChange={handleChange}
-					id='username'
-					value={username}
-					placeholder='Enter username'
-				/>
-			</div>
-			<div className='form-group'>
-				<label htmlFor='group_id'>Group: </label>
-				<select
-					className='form-control'
-					onChange={handleChange}
-					name='group_id'
-					id='group_id'
-					value={group ? group.id : ''}
-				>
-					<option value='' />
-					{groupsList.length &&
-						groupsList.map(({ id, name }) => (
-							<option key={id} value={id}>
-								{name}
-							</option>
-						))}
-				</select>
-			</div>
-			<button
-				type='submit'
-				onClick={userId ? handleUpdate : handleSubmit}
-				className='btn btn-primary'
-			>
-				{userId ? 'Update' : 'Submit'}
-			</button>
-			{
-				userId &&
+		<Fragment>
+			<form action=''>
+				<div className='form-group'>
+					<label htmlFor='username'>Username: </label>
+					<input
+						type='text'
+						name='username'
+						className='form-control'
+						onChange={handleChange}
+						id='username'
+						value={username}
+						placeholder='Enter username'
+					/>
+				</div>
+				<div className='form-group'>
+					<label htmlFor='group_id'>Group: </label>
+					<select
+						className='form-control'
+						onChange={handleChange}
+						name='group_id'
+						id='group_id'
+						value={group ? group.id : ''}
+					>
+						<option value='' />
+						{groupsList.length &&
+							groupsList.map(({ id, name }) => (
+								<option key={id} value={id}>
+									{name}
+								</option>
+							))}
+					</select>
+				</div>
 				<button
-					type='button'
-					onClick={() => deleteUser(userId)}
-					className='btn btn-danger ml-4'
+					type='submit'
+					onClick={userId ? handleUpdate : handleSubmit}
+					className='btn btn-primary'
 				>
-					DELETE
+					{userId ? 'Update' : 'Submit'}
 				</button>
-			}
+				{
+					userId &&
+					<button
+						type='button'
+						onClick={() => deleteUser(userId)}
+						className='btn btn-danger ml-4'
+					>
+						DELETE
+					</button>
+				}
 
-		</form>
+			</form>
+
+			{redirect && <Redirect to='/users-list'/>}
+		</Fragment>
 	);
 };
 

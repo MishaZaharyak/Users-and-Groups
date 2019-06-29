@@ -1,8 +1,14 @@
 import { combineReducers } from 'redux';
 import usersData from './user';
 import groupsData from './group';
+import errorsData from './errors';
+import messageData from './messages';
 
-export default combineReducers({
+const rootReducer = combineReducers({
 	usersData,
-	groupsData
+	groupsData,
+	errorsData,
+	messageData
 });
+
+export default rootReducer;

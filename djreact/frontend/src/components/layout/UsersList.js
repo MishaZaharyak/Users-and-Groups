@@ -2,10 +2,9 @@ import React, { Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getUsers, deleteUser } from '../../actions/user';
-import { useAlert } from 'react-alert'
+
 
 const UsersList = props => {
-	const alert = useAlert();
 
 	useEffect(() => {
 		props.getUsers();
@@ -13,7 +12,6 @@ const UsersList = props => {
 
 	const deleteUser = id => {
 		props.deleteUser(id);
-		alert.show(props.message, {type: props.alert})
 	};
 
 	const hasData = props.users.length > 0;
@@ -72,8 +70,6 @@ const UsersList = props => {
 
 const mapStateToProps = state => ({
 	users: state.usersData.usersData,
-	message: state.groupsData.message,
-	alert: state.groupsData.alert,
 });
 
 export default connect(

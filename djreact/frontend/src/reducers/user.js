@@ -4,8 +4,6 @@ const initialState = {
 	usersData: [],
 	pagination: {},
 	groups_list: [],
-	message: '',
-	alert: ''
 };
 
 export default function(state = initialState, action) {
@@ -32,15 +30,11 @@ export default function(state = initialState, action) {
 		case CREATE_USER:
 			return {
 				...state,
-				message: action.message,
-				alert: action.alert
 			};
 
 		case UPDATE_USER:
 			return {
 				...state,
-				message: action.message,
-				alert: action.alert
 			};
 
 		case DELETE_USER:
@@ -50,8 +44,6 @@ export default function(state = initialState, action) {
 				usersData: state.usersData.length
 					? state.usersData.filter(user => parseInt(user.id) !== parseInt(action.payload))
 					: {},
-				message: action.message,
-				alert: action.alert
 			};
 
 		default:

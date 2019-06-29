@@ -1,37 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { connect } from 'react-redux';
 import { createGroup, updateGroupData, deleteGroup } from '../../actions/group';
 import axios from 'axios';
-import { useAlert } from 'react-alert'
+import { Redirect } from 'react-router';
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 const UserForm = props => {
-	const alert = useAlert();
 	const [groupData, setGroupData] = useState({
 		name: '',
 		description: '',
 	});
+
 	const { groupId } = props.match.params;
 
-	const handleSubmit = e => {
-		e.preventDefault();
-		const { name, description } = groupData;
-		props.createGroup({ name, description});
-		setGroupData({
-			name: '',
-            description: '',
-		});
-		alert.show(props.message, {type: props.alert})
-	};
-
-	const handleUpdate = e => {
-		e.preventDefault();
-		const { name, description } = groupData;
-
-		props.updateGroupData({ name, description, id: parseInt(groupId) });
-		alert.show(props.message, {type: props.alert})
-	};
+	const [redirect, setRedirect] = useState(false);
 
 	useEffect(function() {
 		(async () => {
@@ -46,11 +29,31 @@ const UserForm = props => {
 						description
 					});
 				} catch (error) {
-					console.log(error);
+					console.error(error);
 				}
 			}
 		})();
 	}, []);
+
+	const handleSubmit = e => {
+		e.preventDefault();
+
+		const { name, description } = groupData;
+
+		props.createGroup({ name, description});
+
+		setGroupData({
+			name: '',
+            description: '',
+		});
+	};
+
+	const handleUpdate = e => {
+		e.preventDefault();
+		const { name, description } = groupData;
+
+		props.updateGroupData({ name, description, id: parseInt(groupId) });
+	};
 
 	const handleChange = e => {
 		setGroupData({
@@ -61,67 +64,69 @@ const UserForm = props => {
 
 	const deleteGroup = id => {
 		props.deleteGroup(id);
+
 		setGroupData({
 			name: '',
 			description: ''
-		})
+		});
+
+		setTimeout(() => setRedirect(true), 1000);
 	};
 
 	const { name, description } = groupData;
 
 	return (
-		<form action=''>
-			<div className='form-group'>
-				<label htmlFor='name'>Group name: </label>
-				<input
-					type='text'
-					name='name'
-					className='form-control'
-					onChange={handleChange}
-					id='name'
-					value={name}
-					placeholder='Enter name'
-				/>
-			</div>
-			<div className='form-group'>
-				<label htmlFor='description'>Description: </label>
-				<textarea
-					className='form-control'
-					onChange={handleChange}
-					name='description'
-					id='description'
-					value={description}
-				>
-				</textarea>
-			</div>
-			<button
-				type='submit'
-				onClick={groupId ? handleUpdate : handleSubmit}
-				className='btn btn-primary'
-			>
-				{groupId ? 'Update' : 'Submit'}
-			</button>
-			{
-				groupId &&
+		<Fragment>
+			<form action=''>
+				<div className='form-group'>
+					<label htmlFor='name'>Name: </label>
+					<input
+						type='text'
+						name='name'
+						className='form-control'
+						onChange={handleChange}
+						id='name'
+						value={name}
+						placeholder='Enter name'
+					/>
+				</div>
+				<div className='form-group'>
+					<label htmlFor='description'>Description: </label>
+					<textarea
+						className='form-control'
+						onChange={handleChange}
+						name='description'
+						id='description'
+						value={description}
+					>
+					</textarea>
+				</div>
 				<button
-					type='button'
-					onClick={() => deleteGroup(groupId)}
-					className='btn btn-danger ml-4'
+					type='submit'
+					onClick={groupId ? handleUpdate : handleSubmit}
+					className='btn btn-primary'
 				>
-					DELETE
+					{groupId ? 'Update' : 'Submit'}
 				</button>
-			}
+				{
+					groupId &&
+					<button
+						type='button'
+						onClick={() => deleteGroup(groupId)}
+						className='btn btn-danger ml-4'
+					>
+						DELETE
+					</button>
+				}
 
-		</form>
+			</form>
+
+			{redirect && <Redirect to='/groups-list'/>}
+		</Fragment>
 	);
 };
 
-const mapStateToProps = state => ({
-	message: state.groupsData.message,
-	alert: state.groupsData.alert,
-});
-
 export default connect(
-	mapStateToProps,
+	null,
 	{ createGroup, updateGroupData, deleteGroup }
 )(UserForm);
