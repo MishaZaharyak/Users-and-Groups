@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {GET_USERS, CREATE_USER, DELETE_USER, UPDATE_USER, GET_ERRORS} from './types';
-import {createMessage} from "./messages";
+import {GET_USERS, CREATE_USER, DELETE_USER, UPDATE_USER} from './types';
+import {createMessage, returnErrors} from "./messages";
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
@@ -14,17 +14,9 @@ export const getUsers = () => dispatch => {
 				payload: res.data
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // delete user
@@ -41,17 +33,9 @@ export const deleteUser = id => dispatch => {
 				payload: id,
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // create user
@@ -68,17 +52,9 @@ export const createUser = data => dispatch => {
 				payload: res.data,
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // update user data
@@ -94,15 +70,7 @@ export const updateUserData = data => dispatch => {
 				type: UPDATE_USER,
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };

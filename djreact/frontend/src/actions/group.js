@@ -1,6 +1,6 @@
 import axios from 'axios';
-import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP, GET_ERRORS} from './types';
-import {createMessage} from './messages';
+import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP} from './types';
+import {createMessage, returnErrors} from './messages';
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
@@ -14,17 +14,9 @@ export const getGroups = () => dispatch => {
 				payload: res.data
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // delete group
@@ -43,17 +35,9 @@ export const deleteGroup = id => dispatch => {
 				payload: id ? id : '',
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // create group
@@ -70,17 +54,9 @@ export const createGroup = data => dispatch => {
 				payload: res.data,
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };
 
 // update group data
@@ -97,15 +73,7 @@ export const updateGroupData = data => dispatch => {
 				type: UPDATE_GROUP,
 			});
 		})
-		.catch(err => {
-			const errors = {
-				msg: err.response.data,
-				status: err.response.status
-			};
-
-			dispatch({
-				type: GET_ERRORS,
-				payload: errors
-			});
-		});
+		.catch(err => dispatch(returnErrors(
+			err.response.data, err.response.status
+		)));
 };

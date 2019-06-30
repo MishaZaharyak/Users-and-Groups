@@ -27,6 +27,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return Response(data)
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -45,6 +48,9 @@ class GroupViewSet(viewsets.ModelViewSet):
         return Response({
             'id': id,
         })
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
     def perform_destroy(self, instance):
         instance.delete()
