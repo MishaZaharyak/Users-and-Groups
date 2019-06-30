@@ -2,7 +2,6 @@ from rest_framework import viewsets, generics, mixins
 from backend.serializers import UserSerializer, GroupSerializer
 from backend.models import UserModel, Group
 from rest_framework.response import Response
-from rest_framework import status
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,6 +28,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 class GroupViewSet(viewsets.ModelViewSet):

@@ -25,6 +25,8 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(DynamicFieldsModelSerializer):
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Group
         fields = '__all__'
@@ -33,6 +35,7 @@ class GroupSerializer(DynamicFieldsModelSerializer):
 class UserSerializer(DynamicFieldsModelSerializer):
     group = GroupSerializer(fields=('id', 'name'), required=False, read_only=True)
     group_id = serializers.IntegerField(write_only=True, required=False)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = UserModel
@@ -40,9 +43,11 @@ class UserSerializer(DynamicFieldsModelSerializer):
 
     def create(self, validated_data):
         group = Group.objects.get(pk=validated_data.pop('group_id'))
+
         data = {
-            'username': validated_data['username'],
+            **validated_data,
             'group': group
         }
         instance = UserModel.objects.create(**data)
+
         return instance
