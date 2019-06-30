@@ -1,13 +1,14 @@
 import axios from 'axios';
 import {GET_USERS, CREATE_USER, DELETE_USER, UPDATE_USER} from './types';
 import {createMessage, returnErrors} from "./messages";
+import {tokenConfig} from "./auth";
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 // GET users list
-export const getUsers = () => dispatch => {
+export const getUsers = () => (dispatch, getState) => {
 	axios
-		.get(`${BASE_URL}/users`)
+		.get(`${BASE_URL}/users`, tokenConfig(getState))
 		.then(res => {
 			dispatch({
 				type: GET_USERS,
@@ -20,9 +21,9 @@ export const getUsers = () => dispatch => {
 };
 
 // delete user
-export const deleteUser = id => dispatch => {
+export const deleteUser = id => (dispatch, getState) => {
 	axios
-		.delete(`${BASE_URL}/users/${id}/`)
+		.delete(`${BASE_URL}/users/${id}/`, tokenConfig(getState))
 		.then(res => {
 			dispatch(createMessage({
 				deleteUser: 'User was deleted'
@@ -39,9 +40,9 @@ export const deleteUser = id => dispatch => {
 };
 
 // create user
-export const createUser = data => dispatch => {
+export const createUser = data => (dispatch, getState) => {
 	axios
-		.post(`${BASE_URL}/users/`, data)
+		.post(`${BASE_URL}/users/`, data, tokenConfig(getState))
 		.then(res => {
 			dispatch(createMessage({
 				createUser: 'User successfully created'
@@ -58,9 +59,9 @@ export const createUser = data => dispatch => {
 };
 
 // update user data
-export const updateUserData = data => dispatch => {
+export const updateUserData = data => (dispatch, getState) => {
 	axios
-		.put(`${BASE_URL}/users/${data.id}/`, data)
+		.put(`${BASE_URL}/users/${data.id}/`, data, tokenConfig(getState))
 		.then(res => {
 			dispatch(createMessage({
 				updateUser: 'User successfully updated'

@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import BaseRouter from './router';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { HashRouter as Router, Redirect } from 'react-router-dom';
 import Menu from './layout/Menu';
 import { Provider } from 'react-redux';
 import store from '../store';
 import { transitions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import Alerts  from "./layout/Alerts";
-
+import {loadUser} from "../actions/auth";
 
 
 // optional cofiguration
@@ -19,6 +19,10 @@ const options = {
 };
 
 const App = () => {
+	useEffect(() => {
+		store.dispatch(loadUser());
+	}, []);
+
 	return (
 		<Router>
 			<Provider store={store}>
@@ -29,6 +33,10 @@ const App = () => {
 						<BaseRouter />
 					</div>
 				</AlertProvider>
+
+				{!store.isAuthenticated &&
+					<Redirect to="/login" />
+				}
 			</Provider>
 		</Router>
 	);

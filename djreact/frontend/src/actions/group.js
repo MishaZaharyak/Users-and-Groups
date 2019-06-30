@@ -1,13 +1,14 @@
 import axios from 'axios';
 import {GET_GROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP} from './types';
 import {createMessage, returnErrors} from './messages';
+import {tokenConfig} from "./auth";
 
 const BASE_URL = 'http://127.0.0.1:8000';
 
 // GET groups list
-export const getGroups = () => dispatch => {
+export const getGroups = () => (dispatch, getState) => {
 	axios
-		.get(`${BASE_URL}/groups`)
+		.get(`${BASE_URL}/groups`, tokenConfig(getState))
 		.then(res => {
 			dispatch({
 				type: GET_GROUPS,
@@ -20,9 +21,9 @@ export const getGroups = () => dispatch => {
 };
 
 // delete group
-export const deleteGroup = id => dispatch => {
+export const deleteGroup = id => (dispatch, getState) => {
 	axios
-		.delete(`${BASE_URL}/groups/${id}/`)
+		.delete(`${BASE_URL}/groups/${id}/`, tokenConfig(getState))
 		.then(res => {
 			const {id, message} = res.data;
 
@@ -41,9 +42,9 @@ export const deleteGroup = id => dispatch => {
 };
 
 // create group
-export const createGroup = data => dispatch => {
+export const createGroup = data => (dispatch, getState) => {
 	axios
-		.post(`${BASE_URL}/groups/`, data)
+		.post(`${BASE_URL}/groups/`, data, tokenConfig(getState))
 		.then(res => {
 			dispatch(createMessage({
 				createGroup: 'Group successfully created'
@@ -60,9 +61,9 @@ export const createGroup = data => dispatch => {
 };
 
 // update group data
-export const updateGroupData = data => dispatch => {
+export const updateGroupData = data => (dispatch, getState) => {
 	axios
-		.put(`${BASE_URL}/groups/${data.id}/`, data)
+		.put(`${BASE_URL}/groups/${data.id}/`, data, tokenConfig(getState))
 		.then(res => {
 
 			dispatch(createMessage({

@@ -13,14 +13,20 @@ const Alerts = ({ errors, messages }) => {
 
             if (msg.hasOwnProperty(key)) {
 
-                const errText = <div>
-                        <span style={{fontSize: '15px'}} className="font-weight-bold">{`${(key !== 'group_id') ? key : 'Group'}:`}</span>
-                        <ul className="list-unstyled">
-                            {msg[key].map((m, i) => (
-                                <li key={i} style={{fontSize: '10px'}}>{m}</li>
-                            ))}
-                        </ul>
-                    </div>;
+                const errText = (<div>
+                    { Array.isArray(msg[key]) ?
+                        <Fragment>
+                            <span style={{fontSize: '15px'}} className="font-weight-bold">{`${(key !== 'group_id') ? key : 'Group'}:`}</span>
+                            <ul className="list-unstyled">
+                                {msg[key].map((m, i) => (
+                                    <li key={i} style={{fontSize: '10px'}}>{m}</li>
+                                ))}
+                            </ul>
+                        </Fragment>
+
+                        : <span style={{fontSize: '15px'}}>{msg[key]}</span>
+                    }
+                    </div>);
 
                 alert.error(errText);
             }
@@ -37,7 +43,7 @@ const Alerts = ({ errors, messages }) => {
                         <span style={{fontSize: '14px'}}>{msg[key]}</span>
                     </div>;
 
-                alert.success(text);
+                (key === 'passwordNotMatch') ? alert.error(text): alert.success(text);
             }
         }
     };
@@ -54,7 +60,7 @@ const Alerts = ({ errors, messages }) => {
 
         if (Object.keys(messages).length > 0) {
             showMessages(messages)
-        }
+        }const BASE_URL = 'http://127.0.0.1:8000';
 
     }, [messages]);
 
